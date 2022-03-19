@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ofType } from "@ngrx/effects";
 import { ActionsSubject, Store } from '@ngrx/store';
 
@@ -17,7 +17,7 @@ import { RootStoreState } from 'src/app/state/root/root-store-state';
   styleUrls: ['header.scss'],
 })
 export class Header implements OnInit{
-
+  Authentication$: Observable<any>;
   public loggedIn = false;
   loginSubscription = new Subscription();
   eventSubscription = new Subscription();
@@ -34,8 +34,12 @@ export class Header implements OnInit{
     this.loginSubscription = this.loginActionsSubject.pipe(
       ofType<AuthenticationActions.GetSuccessAction>(AuthenticationActions.ActionTypes.GET_SUCCESS)
     ).subscribe(data => {
-     console.log({ 'login success changes': data });
+      console.log({ 'login success changes': data });
       this.presentOKAlert('You are logged-in ...');
+    });
+    this.Authentication$ = this.store.select(state => state.Authentication);
+    this.Authentication$.subscribe((data) => {
+      console.log({ data: data })
     });
   }
 
