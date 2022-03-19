@@ -1,0 +1,31 @@
+<footer class="">
+    <ion-toolbar>
+        <ion-row *ngIf="(Authentication$ | async) && (Authentication$ | async).data">
+            <ion-col size-xs="12">
+                <h6 center class="ion-text-center">
+                    <span>Welcome {{ (Authentication$ | async).data.username }}</span>
+                </h6>
+            </ion-col>
+        </ion-row>
+    <ion-row>
+        <ion-col size-xs="4">
+            <div center class="ion-text-center"> 
+                <ion-icon name="eye-off-outline"></ion-icon>
+                <span>All Rights Reserved</span>
+            </div>
+        </ion-col>
+        <ion-col size-xs="4">
+            <div center class="ion-text-center">
+                <ion-icon name="copy-outline"></ion-icon>
+                <span>Copyright, 2020</span>
+            </div>
+        </ion-col>
+        <ion-col size-xs="4">
+            <div center class="ion-text-center">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{websiteName}}</span>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-toolbar>
+</footer>

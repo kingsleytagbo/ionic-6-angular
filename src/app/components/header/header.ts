@@ -1,0 +1,78 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
+import { Subscription } from 'rxjs';
+import { ofType } from "@ngrx/effects";
+import { ActionsSubject } from '@ngrx/store';
+
+import * as AuthenticationActions from '../../state/authentication/authentication-action';
+import { UserService } from '../../services/user-service';
+
+
+@Component({
+  selector: 'page-header',
+  templateUrl: 'header.html',
+  styleUrls: ['header.scss'],
+})
+export class Header implements OnInit{
+
+  public loggedIn = false;
+  loginSubscription = new Subscription();
+  eventSubscription = new Subscription();
+
+  constructor(public router: Router,
+  public UserService: UserService,
+  private loginActionsSubject: ActionsSubject,
+  public alert: AlertController ) { 
+  }
+
+  ngOnInit() {
+    this.checkLoginStatus();
+    this.loginSubscription = this.loginActionsSubject.pipe(
+      ofType<AuthenticationActions.GetSuccessAction>(AuthenticationActions.ActionTypes.GET_SUCCESS)
+    ).subscribe(data => {
+     // console.log({ 'login success changes': data });
+      this.presentOKAlert('You are logged-in ...');
+    });
+  }
+
+  ngOnDestroy() {
+    this.loginSubscription.unsubscribe();
+    this.eventSubscription.unsubscribe();
+  }
+
+
+  async presentOKAlert(message: string) {
+    const alert = await this.alert.create({
+      header: 'Login',
+      subHeader: 'Success',
+      message: message,
+      buttons: ['OK']
+    });
+  }
+
+  checkLoginStatus() {
+    return this.UserService.isLoggedIn().then(loggedIn => {
+     // console.log({loggedIn: loggedIn});
+      return this.updateLoggedInStatus(loggedIn);
+    });
+  }
+
+  updateLoggedInStatus(loggedIn: boolean) {
+    setTimeout(() => {
+      this.loggedIn = loggedIn;
+    }, 300);
+  }
+
+  login(){
+    this.router.navigateByUrl('/login');
+  }
+
+  logout (){
+    this.UserService.logout().then(loggedIn => {
+      return this.router.navigateByUrl('/login');
+    });
+  }
+
+}

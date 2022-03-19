@@ -1,0 +1,18 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+                <ion-icon slot="primary" name="home-sharp"></ion-icon>
+                CMS In Angular
+        </ion-title>
+        <ion-buttons slot="primary">
+            <ion-button *ngIf="loggedIn" (click)="logout()">
+                <ion-icon slot="start" name="lock-closed"></ion-icon>
+                <span>Logout </span>
+            </ion-button>
+            <ion-button *ngIf="!loggedIn" (click)="login()">
+                <ion-icon slot="start" name="log-out"></ion-icon>
+                <span>Login</span>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
