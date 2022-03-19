@@ -35,6 +35,16 @@ export function AuthenticationStoreReducer(state = initialAuthenticationState, a
             };
         }
 
+        case AuthenticationActions.ActionTypes.LOGOUT: {
+            return {
+                ...state,
+                actionType: AuthenticationActions.ActionTypes.LOGOUT,
+                isLoading: false,
+                error: null,
+                data:null
+            };
+        }
+
         default: {
             return state;
         }

@@ -11,19 +11,12 @@ import { environment } from '../../../environments/environment';
 })
 export class Footer implements OnInit{
   Authentication$: Observable<any>;
-  LoggedInUser:null;
-  websiteName = environment.WEBSITE_NAME;
+  WebsiteName = environment.WEBSITE_NAME;
   constructor(private store: Store<RootStoreState>) { 
 
   }
   ngOnInit() {  
     this.Authentication$ = this.store.select(state => state.Authentication);
-    /*
-   this.Authentication.subscribe((data) =>{
-     this.LoggedInUser = data;
-      console.log({data : data})
-   });
-   */
   }  
 
 

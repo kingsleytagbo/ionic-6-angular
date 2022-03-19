@@ -4,10 +4,11 @@ import { AlertController } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
 import { ofType } from "@ngrx/effects";
-import { ActionsSubject } from '@ngrx/store';
+import { ActionsSubject, Store } from '@ngrx/store';
 
 import * as AuthenticationActions from '../../state/authentication/authentication-action';
 import { UserService } from '../../services/user-service';
+import { RootStoreState } from 'src/app/state/root/root-store-state';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class Header implements OnInit{
 
   constructor(public router: Router,
   public UserService: UserService,
+  private store: Store<RootStoreState>,
   private loginActionsSubject: ActionsSubject,
   public alert: AlertController ) { 
   }
@@ -71,7 +73,8 @@ export class Header implements OnInit{
 
   logout (){
     this.UserService.logout().then(loggedIn => {
-      return this.router.navigateByUrl('/login');
+      this.store.dispatch(new AuthenticationActions.LogOutAction());
+     return this.router.navigateByUrl('/login');
     });
   }
 
