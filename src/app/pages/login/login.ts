@@ -37,6 +37,7 @@ export class LoginPage {
     this.loginSubscription = this.loginActionsSubject.pipe(
       ofType<AuthenticationActions.GetFailureAction>(AuthenticationActions.ActionTypes.GET_FAILURE)
     ).subscribe(data => {
+      console.log(data)
       this.loggedIn = false;
       this.presentAlert();
     });

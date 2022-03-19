@@ -72,7 +72,7 @@ export class AuthenticationStoreEffects {
         tap((action) => 
             { 
 
-            if (action.payload.data.authenticated === true) {
+            if (action.payload.data && action.payload.data.authenticated === true) {
                 this.router.navigateByUrl('/lms');
             }
         }),
