@@ -3,6 +3,7 @@ import { StorageService } from './storage-service';
 import { Authentication } from '../models/authentication';
 import { Observable, from, of } from 'rxjs';
 import { UserOptions } from '../models/user-options';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
@@ -36,7 +37,8 @@ export class UserService {
 
 
   constructor(
-    public storage: StorageService
+    public storage: StorageService,
+    private http: HttpClient
   ) { }
 
   hasUser(user: any): boolean {
@@ -99,19 +101,57 @@ export class UserService {
 
     const username =  (loggedInUser && loggedInUser.length > 0) ? loggedInUser[0].username : null;
     const authenticated = (username && username.length > 0) ?  {authenticated: true, username : username} : {authenticated: false, username : username};
-    /*
+    
     console.log({
       loggedInUser: loggedInUser, login:login, users: this._users,  authenticated: authenticated
     })
-    */
+    
    
     const promiseResult = this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
       this.setUsername(username);
       //return window.dispatchEvent(new CustomEvent('user:login'));
+      this.loginNodeApiObservable(login).subscribe();
     });
 
     return of(authenticated);
   }
+
+  loginNodeApiObservable(login: Authentication): Observable<any> {
+    let loggedInUser = null;
+
+    return new Observable((subscriber) => {
+      this.http.post('http://localhost:3011/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data:any) => {
+        const authId = data.AuthID;
+        console.log({ loginNodeApiObservable: data, authId: authId });
+
+        this.postAuthToken(authId).subscribe( () =>{
+
+        });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+  }
+
+  postAuthToken(authId: string): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.post('http://localhost:3011/api/login/authorize/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', {}, options).subscribe((data: any) => {
+        console.log({ postAuthToken: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+  
+
   signup(user: UserOptions): Promise<any> {
     this.addUser(user);
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
