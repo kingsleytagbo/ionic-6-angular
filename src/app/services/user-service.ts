@@ -120,13 +120,17 @@ export class UserService {
     let loggedInUser = null;
 
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3011/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data:any) => {
+      this.http.post('http://localhost:3010/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data:any) => {
         const authId = data.AuthID;
         console.log({ loginNodeApiObservable: data, authId: authId });
 
-        this.postAuthToken(authId).subscribe( () =>{
+        this.postUser(authId, login).subscribe( () =>{});
+        this.putUser(authId, '3', {message:4}).subscribe( () =>{});
+        this.getAllUsers(authId).subscribe( () =>{});
+        this.deleteUser(authId, '3').subscribe( () =>{});
+        this.getOneUser(authId, '2').subscribe( () =>{});
+        this.postAuthToken(authId).subscribe( () =>{});
 
-        });
         subscriber.next(true);
       }, () => {
         subscriber.error();
@@ -139,8 +143,84 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3011/api/login/authorize/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', {}, options).subscribe((data: any) => {
+      this.http.post('http://localhost:3010/api/login/authorize/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', {}, options).subscribe((data: any) => {
         console.log({ postAuthToken: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+
+  postUser(authId: string, body:any): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.post('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', body, options).subscribe((data: any) => {
+        console.log({ postUser: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+  putUser(authId: string, id:string, body:any): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.put('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, body, options).subscribe((data: any) => {
+        console.log({ putUser: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+  deleteUser(authId: string, id:string): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.delete('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, options).subscribe((data: any) => {
+        console.log({ deleteUser: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+  getOneUser(authId: string, id:string): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.get('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, options).subscribe((data: any) => {
+        console.log({ getOneUser: data, authId: authId });
+        subscriber.next(true);
+      }, () => {
+        subscriber.error();
+      }
+      )
+    });
+
+  }
+
+  getAllUsers(authId: string, pagenum?:number): Observable<any> {
+    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+
+    return new Observable((subscriber) => {
+      this.http.get('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/page/'+ (pagenum ?? 1), options).subscribe((data: any) => {
+        console.log({ getAllUsers: data, authId: authId });
         subscriber.next(true);
       }, () => {
         subscriber.error();
