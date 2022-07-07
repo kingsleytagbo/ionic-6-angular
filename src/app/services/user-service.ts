@@ -12,6 +12,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class UserService {
   HAS_LOGGED_IN = 'hasLoggedIn';
   HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
+  authenticationId = null;
 
   _users: Array<UserOptions> = [{
     id: '1',
@@ -46,34 +47,33 @@ export class UserService {
   }
 
   addUser(user: any): void {
-    this._users.push(user);
+    this.postUser(this.authenticationId, user).subscribe(() => {
+      this.populateUsers();
+    });
+    //this._users.push(user);
+    // console.log({ user: user })
   }
 
   updateUser(user: any): void {
+    this.putUser(this.authenticationId, user.id, user).subscribe(() => {
+      this.populateUsers();
+    });
     /*
-    const index = this._users.indexOf(user);
-    if (index > -1) {
-      this._users.splice(index, 1);
-    }
-    */
     for (let i = 0; i < this._users.length; i++) {
       if (user.id === this._users[i].id) {
         this._users[i] = user;
         break;
       }
     }
+    */
   }
 
   removeUser(user: any): void {
-    /*
-    const index = this._users.indexOf(user);
-    if (index > -1) {
-      this._users.splice(index, 1);
-    }
-    */
     for (let i = 0; i < this._users.length; i++) {
       if (user.id === this._users[i].id) {
         const sliced = this._users.splice(i, 1);
+        console.log({removeUser: user})
+        this.deleteUser(this.authenticationId, user.id).subscribe( () =>{});
         break;
       }
     }
@@ -85,7 +85,7 @@ export class UserService {
     return sortedUsers;
   }
 
-  login(login: Authentication): Promise<any> {
+  loginLocalOnly(login: Authentication): Promise<any> {
     const username = login.username;
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
       this.setUsername(username);
@@ -93,46 +93,67 @@ export class UserService {
     });
   }
 
-  loginObservable(login: Authentication): Observable<any> {
+  loginLocalObservable(login: Authentication): Observable<any> {
     const loggedInUser = (login.username && login.emailaddress) ? 
     this._users.filter( (user:UserOptions) => 
     (user.username === login.username) && 
-    (user.emailaddress === login.emailaddress) )  : null;
+    (user.emailaddress === login.emailaddress) ) : null;
+
 
     const username =  (loggedInUser && loggedInUser.length > 0) ? loggedInUser[0].username : null;
     const authenticated = (username && username.length > 0) ?  {authenticated: true, username : username} : {authenticated: false, username : username};
-    
+    /*
     console.log({
       loggedInUser: loggedInUser, login:login, users: this._users,  authenticated: authenticated
     })
-    
+    */
    
     const promiseResult = this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
       this.setUsername(username);
       //return window.dispatchEvent(new CustomEvent('user:login'));
-      this.loginNodeApiObservable(login).subscribe();
+      //this.loginNodeApiObservable(login).subscribe();
     });
 
     return of(authenticated);
   }
 
-  loginNodeApiObservable(login: Authentication): Observable<any> {
-    let loggedInUser = null;
+  login(login: Authentication): Observable<any> {
 
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3010/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data:any) => {
-        const authId = data.AuthID;
-        console.log({ loginNodeApiObservable: data, authId: authId });
+      this.http.post('http://localhost:3010/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data: any) => {
+        const response = (data && data.AuthID) ? { authenticated: true, username: data.UserName } : { authenticated: false, username:null };
+        if (response.authenticated) {
+          // login is successful
+          this.authenticationId = data.AuthID;
+          this.populateUsers();
+          const username = data.UserName;
 
-        this.postUser(authId, login).subscribe( () =>{});
-        this.putUser(authId, '3', {message:4}).subscribe( () =>{});
-        this.getAllUsers(authId).subscribe( () =>{});
-        this.deleteUser(authId, '3').subscribe( () =>{});
-        this.getOneUser(authId, '2').subscribe( () =>{});
-        this.postAuthToken(authId).subscribe( () =>{});
+          console.log({
+            loggedInUser: { login: login, data: data, users: this._users }
+          })
 
-        subscriber.next(true);
-      }, () => {
+          this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
+            this.setUsername(username);
+          });
+
+        }
+        else {
+          this.storage.set(this.HAS_LOGGED_IN, false);
+        }
+
+        //return of(authenticated);
+
+        /**
+         this.postUser(this.authenticationId, login).subscribe( () =>{});
+         this.putUser(this.authenticationId, '1', {firstname:'admin', lastname:'user'}).subscribe( () =>{});
+         this.getAllUsers(this.authenticationId).subscribe( () =>{});
+         this.deleteUser(this.authenticationId, '3').subscribe( () =>{});
+         this.getOneUser(this.authenticationId, '1').subscribe( () =>{});
+         this.postAuthToken(this.authenticationId).subscribe( () =>{});
+         **/
+
+        subscriber.next(response);
+      }, (error:any) => {
         subscriber.error();
       }
       )
@@ -190,7 +211,7 @@ export class UserService {
 
     return new Observable((subscriber) => {
       this.http.delete('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, options).subscribe((data: any) => {
-        console.log({ deleteUser: data, authId: authId });
+        //console.log({ deleteUser: data, authId: authId });
         subscriber.next(true);
       }, () => {
         subscriber.error();
@@ -220,8 +241,8 @@ export class UserService {
 
     return new Observable((subscriber) => {
       this.http.get('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/page/'+ (pagenum ?? 1), options).subscribe((data: any) => {
-        console.log({ getAllUsers: data, authId: authId });
-        subscriber.next(true);
+        //console.log({ getAllUsers: data, authId: authId });
+        subscriber.next(data);
       }, () => {
         subscriber.error();
       }
@@ -230,7 +251,20 @@ export class UserService {
 
   }
 
-  
+  populateUsers(){
+    this.getAllUsers(this.authenticationId).subscribe((items: Array<any>) => {
+      if (items && items.length > 0) {
+       if(this._users && this._users.length > 0){
+        this._users.splice(0,this._users.length);
+       }
+        items.forEach( (item:any) => {
+          const user = Object.assign(
+            {id: item.ITCC_UserID, username: item.UserName, emailaddress: item.EmailAddress}, item);
+          this._users.push(user);
+        });
+      }
+    });
+  }
 
   signup(user: UserOptions): Promise<any> {
     this.addUser(user);
@@ -264,9 +298,4 @@ export class UserService {
     });
   }
 
-  checkHasSeenTutorial(): Promise<string> {
-    return this.storage.get(this.HAS_SEEN_TUTORIAL).then((value) => {
-      return value;
-    });
-  }
 }

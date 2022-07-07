@@ -52,10 +52,10 @@ export class AuthenticationStoreEffects {
       ofType<AuthenticationActions.GetRequestAction>(AuthenticationActions.ActionTypes.GET_REQUEST),
       switchMap((action) =>
         // call the service
-        this.userService.loginObservable(action.payload).pipe(
+        this.userService.login(action.payload).pipe(
           // return a Success action when everything went OK
           map(data => {
-            // console.log({ map: { data:data, action:action, payload: action.payload } });
+            console.log({ map: { data:data, action:action, payload: action.payload } });
                   if ((data.authenticated === true) && (data.username && data.username.length > 0)) {
 
                       return new AuthenticationActions.GetSuccessAction({ data: data });
