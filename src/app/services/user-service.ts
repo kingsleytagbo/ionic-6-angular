@@ -14,27 +14,7 @@ export class UserService {
   HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
   authenticationId = null;
 
-  _users: Array<UserOptions> = [{
-    id: '1',
-    username: 'admin',
-    emailaddress: "password",
-    
-  }, {
-    id: '2',
-    username: 'Jekyll Hyde',
-    emailaddress: "",
-    
-  }, {
-    id: '3',
-    username: 'Storm Trooper',
-    emailaddress: "",
-    
-  }, {
-    id: '4',
-    username: 'Lennox Lewis',
-    emailaddress: "",
-    
-  }];
+  _users: Array<UserOptions> = [];
 
 
   constructor(
@@ -50,71 +30,24 @@ export class UserService {
     this.postUser(this.authenticationId, user).subscribe(() => {
       this.populateUsers();
     });
-    //this._users.push(user);
-    // console.log({ user: user })
   }
 
   updateUser(user: any): void {
     this.putUser(this.authenticationId, user.id, user).subscribe(() => {
       this.populateUsers();
     });
-    /*
-    for (let i = 0; i < this._users.length; i++) {
-      if (user.id === this._users[i].id) {
-        this._users[i] = user;
-        break;
-      }
-    }
-    */
   }
 
   removeUser(user: any): void {
-    for (let i = 0; i < this._users.length; i++) {
-      if (user.id === this._users[i].id) {
-        const sliced = this._users.splice(i, 1);
-        console.log({removeUser: user})
-        this.deleteUser(this.authenticationId, user.id).subscribe( () =>{});
-        break;
-      }
-    }
+    this.deleteUser(this.authenticationId, user.id).subscribe( () =>{
+      this.populateUsers();
+    });
   }
 
   getUsers(): Array<any> {
     const sortedUsers =  (this._users && this._users.length > 0) ? this._users.sort( (a,b) => a.id > b.id ? -1 : 0) :
     this._users;
     return sortedUsers;
-  }
-
-  loginLocalOnly(login: Authentication): Promise<any> {
-    const username = login.username;
-    return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(username);
-      //return window.dispatchEvent(new CustomEvent('user:login'));
-    });
-  }
-
-  loginLocalObservable(login: Authentication): Observable<any> {
-    const loggedInUser = (login.username && login.emailaddress) ? 
-    this._users.filter( (user:UserOptions) => 
-    (user.username === login.username) && 
-    (user.emailaddress === login.emailaddress) ) : null;
-
-
-    const username =  (loggedInUser && loggedInUser.length > 0) ? loggedInUser[0].username : null;
-    const authenticated = (username && username.length > 0) ?  {authenticated: true, username : username} : {authenticated: false, username : username};
-    /*
-    console.log({
-      loggedInUser: loggedInUser, login:login, users: this._users,  authenticated: authenticated
-    })
-    */
-   
-    const promiseResult = this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(username);
-      //return window.dispatchEvent(new CustomEvent('user:login'));
-      //this.loginNodeApiObservable(login).subscribe();
-    });
-
-    return of(authenticated);
   }
 
   login(login: Authentication): Observable<any> {
@@ -270,7 +203,6 @@ export class UserService {
     this.addUser(user);
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
       this.setUsername(user.username);
-      //return window.dispatchEvent(new CustomEvent('user:signup'));
     });
   }
 
@@ -278,7 +210,6 @@ export class UserService {
     return this.storage.remove(this.HAS_LOGGED_IN).then(() => {
       return this.storage.remove('username');
     }).then(() => {
-      //window.dispatchEvent(new CustomEvent('user:logout'));
     });
   }
 
