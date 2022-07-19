@@ -66,7 +66,6 @@ export class CrudPage implements OnInit {
 
   onEditHandle(item){
     this.state.item = item;
-    this.UserService.updateUser(item);
     this.state.edit = true;
   }
 
@@ -74,14 +73,6 @@ export class CrudPage implements OnInit {
     this.state.delete = true;
     this.UserService.removeUser(item);
     this.getPageData();
-    /*
-    for(let i = 0; i < this.state.formData.length; i++){
-      if(item.id === this.state.formData[i].id){
-        const sliced = this.state.formData.splice(i, 1);
-        break;
-      }
-    }
-    */
   }
 
   onAddHandle(form:any){
@@ -90,24 +81,19 @@ export class CrudPage implements OnInit {
   }
 
   onCancelHandle(form: NgForm){
-    //this.state.item = {id: '', username: ''};
     this.state.edit = false;
     this.state.delete = false;
     this.state.add = false;
+    this.state.item = null;
   }
 
   onSubmitHandle(form: NgForm) {
     if (form.valid) {
-      if (this.state.item && this.state.item.id.length > 0) {
+      if (this.state.edit === true) {
         this.UserService.updateUser(this.state.item);
       }
-      else{
+      else if (this.state.add === true) {
         this.UserService.addUser({...this.state.item, id: String((this.state.formData.length + 1))});
-        /*
-        this.state.formData.push(
-          {id: String((this.state.formData.length + 1)), username: this.state.item.username}
-        );
-        */
       }
       this.getPageData();
       this.onCancelHandle(form);

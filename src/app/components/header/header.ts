@@ -34,12 +34,12 @@ export class Header implements OnInit{
     this.loginSubscription = this.loginActionsSubject.pipe(
       ofType<AuthenticationActions.GetSuccessAction>(AuthenticationActions.ActionTypes.GET_SUCCESS)
     ).subscribe(data => {
-      console.log({ 'login success changes': data });
+      //console.log({ 'login success changes': data });
       this.presentOKAlert('You are logged-in ...');
     });
     this.Authentication$ = this.store.select(state => state.Authentication);
     this.Authentication$.subscribe((data) => {
-      console.log({ data: data })
+      //console.log({ data: data })
     });
   }
 

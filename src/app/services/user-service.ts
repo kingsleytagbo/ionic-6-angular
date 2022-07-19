@@ -4,6 +4,7 @@ import { Authentication } from '../models/authentication';
 import { Observable, from, of } from 'rxjs';
 import { UserOptions } from '../models/user-options';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -50,10 +51,22 @@ export class UserService {
     return sortedUsers;
   }
 
-  login(login: Authentication): Observable<any> {
 
+getBasicAuthenticationHeaderOptions(login: Authentication){
+  // 'Authorization': 'Basic ' + btoa('username:password')
+  let result:any = null;
+  if(login){
+    result = {'Authorization': 'Basic ' + btoa(login.username + ':' + login.emailaddress)};
+  }
+  return result;
+}
+  login(login: Authentication): Observable<any> {
+    this._users = [];
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3010/api/login/authenticate/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', login).subscribe((data: any) => {
+      const basicAuthenticationOptions =  this.getBasicAuthenticationHeaderOptions(login);
+      //console.log({Authorization: basicAuthenticationOptions});
+
+      this.http.post(`${environment.apiUrl}` + '/login/authenticate/' + '1DC52158-0175-479F-8D7F-D93FC7B1CAA4', null, {headers: basicAuthenticationOptions}).subscribe((data: any) => {
         const response = (data && data.AuthID) ? { authenticated: true, username: data.UserName } : { authenticated: false, username:null };
         if (response.authenticated) {
           // login is successful
@@ -97,7 +110,7 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3010/api/login/authorize/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', {}, options).subscribe((data: any) => {
+      this.http.post(`${environment.apiUrl}` + '/login/authorize/' + `${environment.siteId}`, {}, options).subscribe((data: any) => {
         console.log({ postAuthToken: data, authId: authId });
         subscriber.next(true);
       }, () => {
@@ -113,7 +126,7 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.post('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4', body, options).subscribe((data: any) => {
+      this.http.post(`${environment.apiUrl}` + '/users/' + `${environment.siteId}`, body, options).subscribe((data: any) => {
         console.log({ postUser: data, authId: authId });
         subscriber.next(true);
       }, () => {
@@ -128,7 +141,7 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.put('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, body, options).subscribe((data: any) => {
+      this.http.put(`${environment.apiUrl}` + '/users/' + `${environment.siteId}` + '/' + id, body, options).subscribe((data: any) => {
         console.log({ putUser: data, authId: authId });
         subscriber.next(true);
       }, () => {
@@ -143,7 +156,7 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.delete('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, options).subscribe((data: any) => {
+      this.http.delete(`${environment.apiUrl}` + '/users/' + `${environment.siteId}` + '/' + id, options).subscribe((data: any) => {
         //console.log({ deleteUser: data, authId: authId });
         subscriber.next(true);
       }, () => {
@@ -158,7 +171,7 @@ export class UserService {
     const options = { headers: new HttpHeaders({ 'authid': authId  }) };
 
     return new Observable((subscriber) => {
-      this.http.get('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/' + id, options).subscribe((data: any) => {
+      this.http.get(`${environment.apiUrl}` + '/users/' + `${environment.siteId}`+ '/' + id, options).subscribe((data: any) => {
         console.log({ getOneUser: data, authId: authId });
         subscriber.next(true);
       }, () => {
@@ -170,10 +183,10 @@ export class UserService {
   }
 
   getAllUsers(authId: string, pagenum?:number): Observable<any> {
-    const options = { headers: new HttpHeaders({ 'authid': authId  }) };
+    const options = { headers: new HttpHeaders({ 'authid': authId + "-X"  }) };
 
     return new Observable((subscriber) => {
-      this.http.get('http://localhost:3010/api/users/1DC52158-0175-479F-8D7F-D93FC7B1CAA4/page/'+ (pagenum ?? 1), options).subscribe((data: any) => {
+      this.http.get(`${environment.apiUrl}` + '/users/' + `${environment.siteId}` + '/page/'+ (pagenum ?? 1), options).subscribe((data: any) => {
         //console.log({ getAllUsers: data, authId: authId });
         subscriber.next(data);
       }, () => {
