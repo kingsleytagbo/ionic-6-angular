@@ -25,8 +25,8 @@ export class CrudPage implements OnInit {
   ionViewWillEnter() {
     // disable the root left menu when entering the crud page
     this.menu.enable(false);
+    this.checkLoginStatus();
     this.getPageData();
-    console.log('IonicViewWillEnter')
   }
 
   ionViewDidLeave() {
@@ -35,10 +35,6 @@ export class CrudPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log('ngOnInit ... ')
-    //this.getPageData();
-    this.checkLoginStatus();
-    console.log({ngOnInit: this})
   }
 
 

@@ -34,7 +34,7 @@
           </ion-grid>
 
           <!-- BEGIN ADD FORM -->
-          <form #addForm="ngForm" novalidate [hidden]="!state.add">
+          <form *ngIf="state.item && state.add" #addForm="ngForm" novalidate>
             <ion-grid>
               <ion-row>
                 <ion-col size-xs="12">
@@ -69,7 +69,7 @@
           <!-- END ADD FORM -->
 
           <!-- BEGIN EDIT FORM -->
-          <form #editForm="ngForm" novalidate [hidden]="!state.edit">
+          <form *ngIf="state.item && state.edit" #editForm="ngForm" novalidate>
             <ion-grid>
               <ion-row>
                 <ion-col size-xs="12">
@@ -104,9 +104,9 @@
           <!-- END EDIT FORM -->
 
           <!-- BEGIN ITEMS GRID -->
-          <ion-grid *ngIf="state.formData.length > 0">
+          <ion-grid *ngIf="state.formData?.length > 0">
             <ion-row *ngFor="let item of state.formData">
-              <ion-col size-xs="12" *ngIf="!(state.item.id === item.id)">
+              <ion-col size-xs="12">
 
                 <ion-row>
                   <ion-col size-xs="12">
