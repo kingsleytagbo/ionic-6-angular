@@ -1,11 +1,11 @@
 
 export class UserOptions {
   id:string;
-  username: string;
-  emailaddress: string;
-  constructor(id:string, username: string, emailaddress: string) {
+  UserName: string;
+  EmailAddress: string;
+  constructor(id:string, UserName: string, EmailAddress: string) {
     this.id = id;
-    this.username = username;
-    this.emailaddress = emailaddress;
+    this.UserName = UserName;
+    this.EmailAddress = EmailAddress;
   }
 }

@@ -40,7 +40,7 @@
                 <ion-col size-xs="12">
                   <ion-item>
                     <ion-label position="stacked" color="primary">Username</ion-label>
-                    <ion-input [(ngModel)]="state.item.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+                    <ion-input [(ngModel)]="state.item.UserName" name="UserName" type="text" #UserName="ngModel" spellcheck="false" autocapitalize="off"
                       required>
                     </ion-input>
                   </ion-item>
@@ -50,7 +50,7 @@
                 <ion-col size-xs="12">
                   <ion-item>
                     <ion-label position="stacked" color="primary">Email</ion-label>
-                    <ion-input [(ngModel)]="state.item.emailaddress" name="emailaddress" type="Email" #uemailaddress="ngModel" spellcheck="false" autocapitalize="off"
+                    <ion-input [(ngModel)]="state.item.EmailAddress" name="EmailAddress" type="Email" #uEmailAddress="ngModel" spellcheck="false" autocapitalize="off"
                       required>
                     </ion-input>
                   </ion-item>
@@ -75,7 +75,7 @@
                 <ion-col size-xs="12">
                   <ion-item>
                     <ion-label position="floating" color="primary">Username</ion-label>
-                    <ion-input [(ngModel)]="state.item.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+                    <ion-input [(ngModel)]="state.item.UserName" name="UserName" type="text" #UserName="ngModel" spellcheck="false" autocapitalize="off"
                       required>
                     </ion-input>
                   </ion-item>
@@ -85,7 +85,7 @@
                 <ion-col size-xs="12">
                   <ion-item>
                     <ion-label position="floating" color="primary">Email</ion-label>
-                    <ion-input [(ngModel)]="state.item.emailaddress" name="emailaddress" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+                    <ion-input [(ngModel)]="state.item.EmailAddress" name="EmailAddress" type="text" #EmailAddress="ngModel" spellcheck="false" autocapitalize="off"
                       required>
                     </ion-input>
                   </ion-item>
@@ -111,10 +111,10 @@
                 <ion-row>
                   <ion-col size-xs="12">
                     <ion-item>
-                      <ion-text>{{item.username}}</ion-text>
+                      <ion-text>{{item.UserName}}</ion-text>
                     </ion-item>
                     <ion-item>
-                      <ion-text readonly="true">{{item.emailaddress}}</ion-text>
+                      <ion-text readonly="true">{{item.EmailAddress}}</ion-text>
                     </ion-item>
                   </ion-col>
                 </ion-row>

@@ -56,7 +56,7 @@ export class AuthenticationStoreEffects {
           // return a Success action when everything went OK
           map(data => {
             console.log({ map: { data:data, action:action, payload: action.payload } });
-                  if ((data.authenticated === true) && (data.username && data.username.length > 0)) {
+                  if ((data.authenticated === true) && (data.UserName && data.UserName.length > 0)) {
 
                       return new AuthenticationActions.GetSuccessAction({ data: data });
                   }

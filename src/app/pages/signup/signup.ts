@@ -12,7 +12,7 @@ import { UserOptions } from '../../models/user-options';
   styleUrls: ['./signup.scss'],
 })
 export class SignupPage {
-  signup: UserOptions = {id:'',  username: '', emailaddress: '' };
+  signup: UserOptions = {id:'',  UserName: '', EmailAddress: '' };
   submitted = false;
 
   constructor(

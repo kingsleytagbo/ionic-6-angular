@@ -20,7 +20,7 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['login.scss'],
 })
 export class LoginPage {
-  login: UserOptions = { id:'', username: '', emailaddress: '' };
+  login: UserOptions = { id:'', UserName: '', EmailAddress: '' };
   submitted = false;
   isValid = true;
   public loggedIn = false;
@@ -56,7 +56,7 @@ export class LoginPage {
     const alert = await this.alert.create({
       header: 'Login',
       subHeader: 'Error',
-      message: 'Your username or emailaddress is incorrect!',
+      message: 'Your UserName or EmailAddress is incorrect!',
       buttons: ['OK']
     });
 
@@ -67,7 +67,7 @@ export class LoginPage {
     this.submitted = true;
 
     if (form.valid) {
-      const user = new Authentication(this.login.username, this.login.emailaddress);
+      const user = new Authentication(this.login.UserName, this.login.EmailAddress);
       this.store.dispatch(new AuthenticationActions.GetRequestAction(user));
     }
   }

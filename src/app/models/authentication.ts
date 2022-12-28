@@ -1,10 +1,10 @@
 export  class Authentication{
-    public username: string;
-    public emailaddress: string;
+    public UserName: string;
+    public EmailAddress: string;
     
-    constructor(username: string, emailaddress: string){
-        this.username = username;
-        this.emailaddress = emailaddress;
+    constructor(UserName: string, EmailAddress: string){
+        this.UserName = UserName;
+        this.EmailAddress = EmailAddress;
     }
 
 }

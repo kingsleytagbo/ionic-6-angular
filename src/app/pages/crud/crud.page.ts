@@ -11,7 +11,7 @@ import { UserOptions } from 'src/app/models/user-options';
   styleUrls: ['crud.page.scss'],
 })
 export class CrudPage implements OnInit {
-  private user: UserOptions = { id:'', username: '', emailaddress: '' };
+  private user: UserOptions = { id:'', UserName: '', EmailAddress: '' };
   public state:any = [];
   public loggedIn = false;
 
@@ -25,6 +25,8 @@ export class CrudPage implements OnInit {
   ionViewWillEnter() {
     // disable the root left menu when entering the crud page
     this.menu.enable(false);
+    this.getPageData();
+    console.log('IonicViewWillEnter')
   }
 
   ionViewDidLeave() {
@@ -33,8 +35,10 @@ export class CrudPage implements OnInit {
   }
 
   ngOnInit() {
-    this.getPageData();
+    console.log('ngOnInit ... ')
+    //this.getPageData();
     this.checkLoginStatus();
+    console.log({ngOnInit: this})
   }
 
 
@@ -62,6 +66,7 @@ export class CrudPage implements OnInit {
       item: this.user,
       formData: this.UserService.getUsers()
     };
+    console.log({getPageData: this.state})
   }
 
   onEditHandle(item){

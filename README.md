@@ -1,5 +1,5 @@
 
-## Git Install Comamns
+## Git Install Commans
 
 1. If you have an older version of ionic already installed, run this: 
 ### npm uninstall -g ionic

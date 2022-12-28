@@ -14,23 +14,23 @@ export class UserStorageService {
 
   _users: Array<UserOptions> = [{
     id: '1',
-    username: 'admin',
-    emailaddress: "password",
+    UserName: 'admin',
+    EmailAddress: "password",
     
   }, {
     id: '2',
-    username: 'Jekyll Hyde',
-    emailaddress: "",
+    UserName: 'Jekyll Hyde',
+    EmailAddress: "",
     
   }, {
     id: '3',
-    username: 'Storm Trooper',
-    emailaddress: "",
+    UserName: 'Storm Trooper',
+    EmailAddress: "",
     
   }, {
     id: '4',
-    username: 'Lennox Lewis',
-    emailaddress: "",
+    UserName: 'Lennox Lewis',
+    EmailAddress: "",
     
   }];
 
@@ -72,16 +72,16 @@ export class UserStorageService {
   }
 
   login(login: Authentication): Observable<any> {
-    const loggedInUser = (login.username && login.emailaddress) ? 
+    const loggedInUser = (login.UserName && login.EmailAddress) ? 
     this._users.filter( (user:UserOptions) => 
-    (user.username === login.username) && 
-    (user.emailaddress === login.emailaddress) )  : null;
+    (user.UserName === login.UserName) && 
+    (user.EmailAddress === login.EmailAddress) )  : null;
 
-    const username =  (loggedInUser && loggedInUser.length > 0) ? loggedInUser[0].username : null;
-    const authenticated = (username && username.length > 0) ?  {authenticated: true, username : username} : {authenticated: false, username : username};
+    const UserName =  (loggedInUser && loggedInUser.length > 0) ? loggedInUser[0].UserName : null;
+    const authenticated = (UserName && UserName.length > 0) ?  {authenticated: true, UserName : UserName} : {authenticated: false, UserName : UserName};
    
     const promiseResult = this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(username);
+      this.setUsername(UserName);
     });
 
     return of(authenticated);
@@ -90,23 +90,23 @@ export class UserStorageService {
   signup(user: UserOptions): Promise<any> {
     this.addUser(user);
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(user.username);
+      this.setUsername(user.UserName);
     });
   }
 
   logout(): Promise<any> {
     return this.storage.remove(this.HAS_LOGGED_IN).then(() => {
-      return this.storage.remove('username');
+      return this.storage.remove('UserName');
     }).then(() => {
     });
   }
 
-  setUsername(username: string): Promise<any> {
-    return this.storage.set('username', username);
+  setUsername(UserName: string): Promise<any> {
+    return this.storage.set('UserName', UserName);
   }
 
   getUsername(): Promise<string> {
-    return this.storage.get('username').then((value) => {
+    return this.storage.get('UserName').then((value) => {
       return value;
     });
   }

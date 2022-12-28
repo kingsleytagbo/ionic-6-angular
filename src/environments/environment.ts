@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   WEBSITE_NAME: 'CMS In Angular',
-  apiUrl: 'http://localhost:3010/api',
+  apiUrl: 'http://localhost:3011/api',
   siteId: '1DC52158-0175-479F-8D7F-D93FC7B1CAA4'
 };
 

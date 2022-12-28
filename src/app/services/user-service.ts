@@ -53,11 +53,12 @@ export class UserService {
 
 
 getBasicAuthenticationHeaderOptions(login: Authentication){
-  // 'Authorization': 'Basic ' + btoa('username:password')
+  // 'Authorization': 'Basic ' + btoa('UserName:password')
   let result:any = null;
   if(login){
-    result = {'Authorization': 'Basic ' + btoa(login.username + ':' + login.emailaddress)};
+    result = {'Authorization': 'Basic ' + btoa(login.UserName + ':' + login.EmailAddress)};
   }
+  console.log({result: result})
   return result;
 }
   login(login: Authentication): Observable<any> {
@@ -67,19 +68,19 @@ getBasicAuthenticationHeaderOptions(login: Authentication){
       //console.log({Authorization: basicAuthenticationOptions});
 
       this.http.post(`${environment.apiUrl}` + '/login/authenticate/' + '1DC52158-0175-479F-8D7F-D93FC7B1CAA4', null, {headers: basicAuthenticationOptions}).subscribe((data: any) => {
-        const response = (data && data.AuthID) ? { authenticated: true, username: data.UserName } : { authenticated: false, username:null };
+        const response = (data && data.AuthID) ? { authenticated: true, UserName: data.UserName } : { authenticated: false, UserName:null };
         if (response.authenticated) {
           // login is successful
           this.authenticationId = data.AuthID;
           this.populateUsers();
-          const username = data.UserName;
+          const UserName = data.UserName;
 
           console.log({
             loggedInUser: { login: login, data: data, users: this._users }
           })
 
           this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-            this.setUsername(username);
+            this.setUsername(UserName);
           });
 
         }
@@ -186,7 +187,7 @@ getBasicAuthenticationHeaderOptions(login: Authentication){
     const options = { headers: new HttpHeaders({ 'authid': authId + "-X"  }) };
 
     return new Observable((subscriber) => {
-      this.http.get(`${environment.apiUrl}` + '/users/' + `${environment.siteId}` + '/page/'+ (pagenum ?? 1), options).subscribe((data: any) => {
+      this.http.get(`${environment.apiUrl}` + '/users/' + `${environment.siteId}` + '/page/'+ (pagenum ?? 1) +'/10', options).subscribe((data: any) => {
         //console.log({ getAllUsers: data, authId: authId });
         subscriber.next(data);
       }, () => {
@@ -199,39 +200,42 @@ getBasicAuthenticationHeaderOptions(login: Authentication){
 
   populateUsers(){
     this.getAllUsers(this.authenticationId).subscribe((items: Array<any>) => {
+
       if (items && items.length > 0) {
        if(this._users && this._users.length > 0){
         this._users.splice(0,this._users.length);
        }
         items.forEach( (item:any) => {
           const user = Object.assign(
-            {id: item.ITCC_UserID, username: item.UserName, emailaddress: item.EmailAddress}, item);
+            {id: item.ITCC_UserID, UserName: item.UserName, EmailAddress: item.EmailAddress}, item);
           this._users.push(user);
         });
       }
+
+      console.log({getAllUsers: items, users: this._users})
     });
   }
 
   signup(user: UserOptions): Promise<any> {
     this.addUser(user);
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(user.username);
+      this.setUsername(user.UserName);
     });
   }
 
   logout(): Promise<any> {
     return this.storage.remove(this.HAS_LOGGED_IN).then(() => {
-      return this.storage.remove('username');
+      return this.storage.remove('UserName');
     }).then(() => {
     });
   }
 
-  setUsername(username: string): Promise<any> {
-    return this.storage.set('username', username);
+  setUsername(UserName: string): Promise<any> {
+    return this.storage.set('UserName', UserName);
   }
 
   getUsername(): Promise<string> {
-    return this.storage.get('username').then((value) => {
+    return this.storage.get('UserName').then((value) => {
       return value;
     });
   }

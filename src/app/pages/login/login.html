@@ -29,25 +29,25 @@
                 <ion-list>
                   <ion-item>
                     <ion-label position="stacked" color="primary">Username</ion-label>
-                    <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+                    <ion-input [(ngModel)]="login.UserName" name="UserName" type="text" #UserName="ngModel" spellcheck="false" autocapitalize="off"
                       required>
                     </ion-input>
                   </ion-item>
 
                   <ion-text color="danger">
-                    <p [hidden]="username.valid || submitted == false" class="ion-padding-start">
+                    <p [hidden]="UserName.valid || submitted == false" class="ion-padding-start">
                       Username is required
                     </p>
                   </ion-text>
 
                   <ion-item>
                     <ion-label position="stacked" color="primary">Password</ion-label>
-                    <ion-input [(ngModel)]="login.emailaddress" name="emailaddress" type="emailaddress" #emailaddress="ngModel" required>
+                    <ion-input [(ngModel)]="login.EmailAddress" name="EmailAddress" type="EmailAddress" #EmailAddress="ngModel" required>
                     </ion-input>
                   </ion-item>
 
                   <ion-text color="danger">
-                    <p [hidden]="emailaddress.valid || submitted == false" class="ion-padding-start">
+                    <p [hidden]="EmailAddress.valid || submitted == false" class="ion-padding-start">
                       Password is required
                     </p>
                   </ion-text>
@@ -67,7 +67,7 @@
           <ion-row *ngIf="!isValid">
             <ion-col size-xs="12">
               <div class="alert alert-danger" role="alert">
-                Your uername or emailaddress is invalid!
+                Your uername or EmailAddress is invalid!
               </div>
             </ion-col>
           </ion-row>

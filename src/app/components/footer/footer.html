@@ -3,7 +3,7 @@
         <ion-row *ngIf="(Authentication$ | async) && (Authentication$ | async).data">
             <ion-col size-xs="12">
                 <h6 center class="ion-text-center">
-                    <span>Welcome {{ (Authentication$ | async).data.username }}</span>
+                    <span>Welcome {{ (Authentication$ | async).data.UserName }}</span>
                 </h6>
             </ion-col>
         </ion-row>
